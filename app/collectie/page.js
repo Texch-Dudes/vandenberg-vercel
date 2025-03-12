@@ -52,6 +52,50 @@ const CardDetails = ({ data, btnTitle, categoryId, categoryName }) => {
     return text;
   };
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("nl");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setSelectedLanguage(localStorage.getItem("language") || "nl");
+    }
+  }, []);
+
+  const properties = [
+    {
+      key: "constructionYear",
+      title: {
+        NL: "Bouwjaar",
+        EN: "Year of manufacture",
+        FR: "Année de fabrication",
+        DE: "Baujahr",
+        ES: "Año de fabricación",
+      },
+      value: data?.featureSection?.constructionYear,
+    },
+    {
+      key: "kmStand",
+      title: {
+        NL: "Km Stand",
+        EN: "Mileage",
+        FR: "Kilométrage",
+        DE: "Kilometerstand",
+        ES: "Kilometraje",
+      },
+      value: data?.featureSection?.kmStand,
+    },
+
+    {
+      key: "price",
+      title: {
+        NL: "Prijs",
+        EN: "Price",
+        FR: "Prix",
+        DE: "Preis",
+        ES: "Precio",
+      },
+      value: data?.featureSection?.price,
+    },
+  ];
 
   const handleClick = () => {
     setIsLoading(true);
@@ -139,45 +183,15 @@ const CardDetails = ({ data, btnTitle, categoryId, categoryName }) => {
           <div className="carInfo">
             <h2>{data?.slug}</h2>
             <ul className="aboutCar">
-              {data?.featureSection?.constructionYear ? (
-                <li>
-                  <span>
-                    {
-                      translatedStrings?.find(
-                        (item) =>
-                          item?.id === COLLECTION_LABELS_ID.CONSTRUCTION_YEAR
-                      )?.translated
-                    }
-                  </span>
-                  <p>{data?.featureSection?.constructionYear}</p>
-                </li>
-              ) : null}
-              {data?.featureSection?.kmStand ? (
-                <li>
-                  <span>
-                    {
-                      translatedStrings?.find(
-                        (item) => item?.id === COLLECTION_LABELS_ID.KM_STAND
-                      )?.translated
-                    }
-                  </span>
-                  <p>{data?.featureSection?.kmStand}</p>
-                </li>
-              ) : null}
-              <li>
-                <span>
-                  {
-                    translatedStrings?.find(
-                      (item) => item?.id === COLLECTION_LABELS_ID.PRICE
-                    )?.translated
-                  }
-                </span>
-                {data?.featureSection?.price ? (
-                  <p>{formatText(data?.featureSection?.price)}</p>
-                ) : (
-                  <p>{categoryName}</p>
-                )}
-              </li>
+              {properties.map(
+                ({ key, title, value }) =>
+                  value && (
+                    <li key={key}>
+                      <span>{title[selectedLanguage]}</span>
+                      <p>{value}</p>
+                    </li>
+                  )
+              )}
             </ul>
 
             <div className="redirectWrapper">
@@ -522,14 +536,14 @@ export default function Collectie() {
             <source
               media={"(max-width:575px)"}
               srcSet={
-                collectionCtaSection?.ctaImageMobile?.node?.mediaItemUrl ||
-                <Loader />
+                collectionCtaSection?.ctaImageMobile?.node?.mediaItemUrl || (
+                  <Loader />
+                )
               }
             />
             <Image
               src={
-                collectionCtaSection?.ctaImage?.node?.mediaItemUrl ||
-                <Loader />
+                collectionCtaSection?.ctaImage?.node?.mediaItemUrl || <Loader />
               }
               alt="slider"
               width={1920} // Adjust width as per your design
