@@ -32,7 +32,7 @@ export default function Menu({
   setShowNav,
   setFirstLoad,
 }) {
-  
+
   const [selectedOption, setSelectedOption] = useState(
     LANGAUGE.DEFAULT_LANGUAGE_CODE
   );
@@ -173,10 +173,10 @@ export default function Menu({
     toggleMainMenu
       ? tl.current.play()
       : overLayClick
-      ? null
-      : isSamePathName
-      ? null
-      : tl.current.reverse();
+        ? null
+        : isSamePathName
+          ? null
+          : tl.current.reverse();
     setAnimationPlaying(toggleMainMenu);
     handleLogoAnimation(toggleMainMenu);
     setIsNavLinkCliked(true);
@@ -193,7 +193,12 @@ export default function Menu({
       const language =
         localStorage?.getItem(LOCAL_STORAGE.LANGUAGE_KEY) ||
         LANGAUGE.DEFAULT_LANGUAGE_CODE;
-      setSelectedOption(language);
+      if (!localStorage.getItem(LOCAL_STORAGE.LANGUAGE_KEY)) {
+        localStorage.setItem(LOCAL_STORAGE.LANGUAGE_KEY, "NL");
+        setSelectedOption("NL");
+      } else {
+        setSelectedOption(language);
+      }
     }
   }, [flags]);
 
@@ -229,9 +234,8 @@ export default function Menu({
       {loading && <Loader />} {/* Display loader during navigation */}
       <nav
         ref={nav}
-        className={`navBar nav-menu desktopScreenNav ${
-          animationPlaying ? "active" : ""
-        }`}
+        className={`navBar nav-menu desktopScreenNav ${animationPlaying ? "active" : ""
+          }`}
       >
         <ul className="navBlock">
           {navigationData.map((item, index, { length }) => (
