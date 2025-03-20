@@ -19,8 +19,27 @@ const Page = () => {
                 throw new Error("Failed to fetch cars");
             }
             const data = await response.json();
-            console.log("Cars:", data);
-            setCars(data?.data?.collectionCarsDataSection?.nodes || []);
+            const carsData = data?.data?.collectionCarsDataSection?.nodes || [];
+
+            // Fetch category names if missing
+            const updatedCars = await Promise.all(
+                carsData.map(async (car) => {
+                    if (!car.carCategories?.nodes?.[0]?.name && car.carCategories?.nodes?.[0]?.databaseId) {
+                        try {
+                            const categoryResponse = await fetch(`${baseURL}/collectioncarcategory/${car.carCategories.nodes[0].databaseId}`);
+                            if (categoryResponse.ok) {
+                                const categoryData = await categoryResponse.json();
+                                car.carCategories.nodes[0].name = categoryData?.name || "Unknown";
+                            }
+                        } catch (error) {
+                            console.error("Error fetching category name:", error.message);
+                        }
+                    }
+                    return car;
+                })
+            );
+
+            setCars(updatedCars);
         } catch (error) {
             console.error("Error fetching cars:", error.message);
         } finally {
