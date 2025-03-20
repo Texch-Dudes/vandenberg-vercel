@@ -125,7 +125,7 @@ export default function Footer({ loading, setFirstLoad }) {
                   {/* <Footerlogo/> */}
                   <VenDenBergLogo />
                 </div>
-                <p>{appDetails?.logo_text}</p>
+                <p>Specialized in used Porsche.</p>
                 <div className="socialMob">
                   <ul>
                     <li>
