@@ -33,17 +33,20 @@ import {
 } from "@/store/common/action";
 import { fetchSpeedPageData } from "@/store/pages/action";
 import { fetchAndStoreData } from "@/utils";
+import { useRouter } from "next/navigation";
 
 const getTopPosition = (index) => {
   const isMobile = window.innerWidth <= 768;
   return isMobile ? 90 + index * 5 : 160 + index * 5; // Adjust the values as needed
 };
 const SpeedGalleryCard = ({ index, image, subTitle, title }) => {
+  const router = useRouter();
   return (
     <>
       <div
         className="speedPinnedInnerBlock pinned1"
         style={{ top: getTopPosition(index) }}
+        onClick={() => router.push("/collectie")}
       >
         <div className="imgWrapper">
           <img src={image?.node?.mediaItemUrl || placeholerImage.src} alt="" />
@@ -375,6 +378,8 @@ export default function Page() {
         }
         className={"speedpageSlider"}
       />
+
+      
       <section className="ourExclusiveProjects" ref={exclusiveProjectsRef}>
         <div className="container">
           <div className="topContentBlock flexWrapper">
