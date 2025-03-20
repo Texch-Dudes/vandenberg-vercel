@@ -206,6 +206,8 @@ export default function Page() {
     }
   }, []);
 
+console.log("featureSection price", featureSection);``
+
   const properties = [
     {
       key: "type",
@@ -293,11 +295,7 @@ export default function Page() {
         DE: "Preis",
         ES: "Precio",
       },
-      value:
-        carCategories?.nodes[0]?.databaseId == 30 ||
-          carCategories?.nodes[0]?.databaseId == 38
-          ? featureSection?.price
-          : carCategories?.nodes[0]?.name,
+      value:featureSection?.price ? formatText(featureSection?.price) : null,
     },
   ];
 
