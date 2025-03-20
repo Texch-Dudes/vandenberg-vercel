@@ -127,7 +127,9 @@ const AddCars = () => {
         if (!response.ok) throw new Error("Failed to fetch categories");
 
         const data = await response.json();
-        const categoriesData = data.collectionCarCategorySection?.nodes || [];
+        const categoriesData = (data.collectionCarCategorySection?.nodes || []).filter(
+          (category) => category.name !== "Inruilers" 
+        );
         setCategories(categoriesData); // Assuming `data` is an array of category objects
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -242,18 +244,20 @@ const AddCars = () => {
 
   return (
     <div>
-      <button
+     <button
         style={{
           border: "none",
           background: "transparent",
+          paddingTop: "10px",
           cursor: "pointer",
           display: "flex",
+          fontSize: "2rem",
           fontWeight: "bold",
           color: "#D0AF53",
         }}
         onClick={() => router.push("/admin/cars")}
       >
-        <FaChevronLeft color="#D0AF53" />
+        <FaChevronLeft color="#D0AF53" size={24} />
         {language === "en" ? "Cars" : "Auto's"}
       </button>
       <Formik
@@ -263,6 +267,15 @@ const AddCars = () => {
           console.log("Submitting form...");
           try {
             console.log("Form values:", values); // Log form values
+
+            // Ensure only databaseId is sent for carCategories
+            values.carCategories.nodes = values.carCategories.nodes.map((node) => {
+              const category = categories.find((cat) => cat.databaseId === node.databaseId);
+              return {
+                databaseId: node.databaseId,
+                name: category ? category.name : "",
+              };
+            });
 
             // Upload banner image and get URL
             if (bannerImage) {
@@ -453,7 +466,7 @@ const AddCars = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="featureType">{language === "en" ? "Feature Type" : "Kenmerk Type"}</label>
+              <label htmlFor="featureType">{language === "en" ? "Type" : "Type"}</label>
               <Field
                 id="featureType"
                 name="featureSection.type"
@@ -468,7 +481,7 @@ const AddCars = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="featureMotor">{language === "en" ? "Feature Motor" : "Kenmerk Motor"}</label>
+              <label htmlFor="featureMotor">{language === "en" ? "Motor" : "Motor"}</label>
               <Field
                 id="featureMotor"
                 name="featureSection.motor"
@@ -483,7 +496,7 @@ const AddCars = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="featureBody">{language === "en" ? "Feature Body" : "Kenmerk Carrosserie"}</label>
+              <label htmlFor="featureBody">{language === "en" ? "Body" : "Carrosserie"}</label>
               <Field
                 id="featureBody"
                 name="featureSection.body"
@@ -499,7 +512,7 @@ const AddCars = () => {
 
             <div className="form-group">
               <label htmlFor="featureConstructionYear">
-                {language === "en" ? "Feature Construction Year" : "Kenmerk Bouwjaar"}
+                {language === "en" ? "Construction Year" : "Bouwjaar"}
               </label>
               <Field
                 id="featureConstructionYear"
@@ -515,7 +528,7 @@ const AddCars = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="featureKmStand">{language === "en" ? "Feature KM Stand" : "Kenmerk KM Stand"}</label>
+              <label htmlFor="featureKmStand">{language === "en" ? "KM Stand" : "KM Stand"}</label>
               <Field
                 id="featureKmStand"
                 name="featureSection.kmStand"
@@ -530,7 +543,7 @@ const AddCars = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="featureColour">{language === "en" ? "Feature Colour" : "Kenmerk Kleur"}</label>
+              <label htmlFor="featureColour">{language === "en" ? "Colour" : "Kleur"}</label>
               <Field
                 id="featureColour"
                 name="featureSection.colour"
@@ -545,7 +558,7 @@ const AddCars = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="featureStatus">{language === "en" ? "Feature Status" : "Kenmerk Status"}</label>
+              <label htmlFor="featureStatus">{language === "en" ? "Status" : "Status"}</label>
               <Field
                 id="featureStatus"
                 name="featureSection.status"
@@ -560,7 +573,7 @@ const AddCars = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="featurePrice">{language === "en" ? "Feature Price" : "Kenmerk Prijs"}</label>
+              <label htmlFor="featurePrice">{language === "en" ? "Price" : "Prijs"}</label>
               <Field
                 id="featurePrice"
                 name="featureSection.price"
