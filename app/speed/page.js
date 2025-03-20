@@ -70,7 +70,7 @@ const ProjectionCard = ({ title, image, subTitle, data }) => {
         <div className="imgWrapper">
           <img
             src={
-              data?.sliderSection?.sliderItems[0].image?.node?.mediaItemUrl ||
+              data?.sliderSection?.sliderItems[0]?.image?.node?.mediaItemUrl ||
               placeholerImage.src
             }
             alt=""
@@ -317,12 +317,16 @@ export default function Page() {
         if (!response.ok) {
           throw new Error("Failed to fetch cars");
         }
+
         const data = await response.json();
-        const toekomstigeCars = data?.data?.collectionCarsDataSection?.nodes.filter(car =>
+
+        const allCars = data?.data?.collectionCarsDataSection?.nodes || [];
+
+        const filteredCars = allCars.filter(car =>
           car.carCategories.nodes.some(category => category.name === "Toekomstige")
         );
 
-        setCars(toekomstigeCars || []);
+        setCars(filteredCars);
       } catch (error) {
         console.error("Error fetching cars:", error.message);
       }
@@ -332,7 +336,7 @@ export default function Page() {
   }, []);
 
 
-  console.log("bannerr", speedHeroSection)
+
 
 
 
@@ -379,7 +383,7 @@ export default function Page() {
         className={"speedpageSlider"}
       />
 
-      
+
       <section className="ourExclusiveProjects" ref={exclusiveProjectsRef}>
         <div className="container">
           <div className="topContentBlock flexWrapper">
@@ -407,8 +411,8 @@ export default function Page() {
           </div>
         </div>
       </section>
-
-      {cars.length>0 ? (
+      {console.log("cars single", cars)}
+      {cars.length > 0 ? (
         <section className="futureProject">
           <div className="container">
             <h2>{speedProjectCardSection?.projectHeading}</h2>
