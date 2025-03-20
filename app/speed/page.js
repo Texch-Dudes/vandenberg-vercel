@@ -329,7 +329,7 @@ export default function Page() {
   }, []);
 
 
-  console.log("bannerr",speedHeroSection)
+  console.log("bannerr", speedHeroSection)
 
 
 
@@ -403,7 +403,7 @@ export default function Page() {
         </div>
       </section>
 
-      {speedProjectCardSection?.projectCards?.length ? (
+      {cars.length>0 ? (
         <section className="futureProject">
           <div className="container">
             <h2>{speedProjectCardSection?.projectHeading}</h2>
@@ -428,7 +428,7 @@ export default function Page() {
                 </div>
               ) : null}
             </div>
-            <div className="futureProjectBlock smBlock">
+            {/* <div className="futureProjectBlock smBlock">
               <Slider {...settings}>
                 {speedProjectCardSection?.projectCards?.map((data, index) => {
                   return (
@@ -436,7 +436,7 @@ export default function Page() {
                   );
                 })}
               </Slider>
-            </div>
+            </div> */}
           </div>
         </section>
       ) : null}
