@@ -242,6 +242,7 @@ export default function Collectie() {
 
   const [futureCarCategoriesIds, setFutureCarCategoriesIds] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [totalCarsCount, setTotalCarsCount] = useState(0); // New state for total count
 
   useEffect(() => {
     setFutureCarCategoriesIds([
@@ -259,6 +260,19 @@ export default function Collectie() {
           )
       ) || []
     );
+  }, [collectionCarsDataSection, futureCarCategoriesIds]);
+
+  useEffect(() => {
+    // Calculate the total count of all categories
+    const totalCount =
+      collectionCarsDataSection?.nodes?.filter(
+        (data) =>
+          !data?.carCategories?.nodes?.find((item) =>
+            futureCarCategoriesIds?.includes(item?.databaseId)
+          )
+      )?.length || 0;
+
+    setTotalCarsCount(totalCount);
   }, [collectionCarsDataSection, futureCarCategoriesIds]);
 
   const handleTabs = (category) => {
@@ -288,6 +302,7 @@ export default function Collectie() {
       );
     }
   };
+
   const handleViewmore = () => {
     dispatch(setShowCount(filteredData?.length || VIEW_COUNT));
     dispatch(setIsViewMore(true));
@@ -383,6 +398,8 @@ export default function Collectie() {
               <p>{collectionContentSection?.contentText}</p>
             </div>
           </div>
+
+          {console.log("categories count", filteredData)}
           {categories?.length > 0 && (
             <div className="filterBlock">
               <div className="filterTabs">
@@ -395,7 +412,7 @@ export default function Collectie() {
                     onClick={() => handleTabs(ALL_CATEGORY)}
                   >
                     {collectionButtons?.viewAll}{" "}
-                    {filteredData?.length ? `(${filteredData?.length})` : null}
+                    {totalCarsCount ? `(${totalCarsCount})` : null} {/* Use totalCarsCount here */}
                   </li>
                   {categories?.map((category, index) => {
                     return (

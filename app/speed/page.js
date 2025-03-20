@@ -33,17 +33,20 @@ import {
 } from "@/store/common/action";
 import { fetchSpeedPageData } from "@/store/pages/action";
 import { fetchAndStoreData } from "@/utils";
+import { useRouter } from "next/navigation";
 
 const getTopPosition = (index) => {
   const isMobile = window.innerWidth <= 768;
   return isMobile ? 90 + index * 5 : 160 + index * 5; // Adjust the values as needed
 };
 const SpeedGalleryCard = ({ index, image, subTitle, title }) => {
+  const router = useRouter();
   return (
     <>
       <div
         className="speedPinnedInnerBlock pinned1"
         style={{ top: getTopPosition(index) }}
+        onClick={() => router.push("/collectie")}
       >
         <div className="imgWrapper">
           <img src={image?.node?.mediaItemUrl || placeholerImage.src} alt="" />
@@ -67,7 +70,7 @@ const ProjectionCard = ({ title, image, subTitle, data }) => {
         <div className="imgWrapper">
           <img
             src={
-              data?.sliderSection?.sliderItems[0].image?.node?.mediaItemUrl ||
+              data?.sliderSection?.sliderItems[0]?.image?.node?.mediaItemUrl ||
               placeholerImage.src
             }
             alt=""
@@ -314,12 +317,16 @@ export default function Page() {
         if (!response.ok) {
           throw new Error("Failed to fetch cars");
         }
+
         const data = await response.json();
-        const toekomstigeCars = data?.data?.collectionCarsDataSection?.nodes.filter(car =>
+
+        const allCars = data?.data?.collectionCarsDataSection?.nodes || [];
+
+        const filteredCars = allCars.filter(car =>
           car.carCategories.nodes.some(category => category.name === "Toekomstige")
         );
 
-        setCars(toekomstigeCars || []);
+        setCars(filteredCars);
       } catch (error) {
         console.error("Error fetching cars:", error.message);
       }
@@ -329,7 +336,7 @@ export default function Page() {
   }, []);
 
 
-  console.log("bannerr",speedHeroSection)
+
 
 
 
@@ -375,6 +382,8 @@ export default function Page() {
         }
         className={"speedpageSlider"}
       />
+
+
       <section className="ourExclusiveProjects" ref={exclusiveProjectsRef}>
         <div className="container">
           <div className="topContentBlock flexWrapper">
@@ -402,8 +411,8 @@ export default function Page() {
           </div>
         </div>
       </section>
-
-      {speedProjectCardSection?.projectCards?.length ? (
+      {console.log("cars single", cars)}
+      {cars.length > 0 ? (
         <section className="futureProject">
           <div className="container">
             <h2>{speedProjectCardSection?.projectHeading}</h2>
@@ -428,7 +437,7 @@ export default function Page() {
                 </div>
               ) : null}
             </div>
-            <div className="futureProjectBlock smBlock">
+            {/* <div className="futureProjectBlock smBlock">
               <Slider {...settings}>
                 {speedProjectCardSection?.projectCards?.map((data, index) => {
                   return (
@@ -436,7 +445,7 @@ export default function Page() {
                   );
                 })}
               </Slider>
-            </div>
+            </div> */}
           </div>
         </section>
       ) : null}
