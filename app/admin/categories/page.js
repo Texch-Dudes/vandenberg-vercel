@@ -199,14 +199,13 @@ const Page = () => {
                     <thead>
                         <tr>
                             <th>{language === "en" ? "Category Name" : "Categorienaam"}</th>
-                            <th>{language === "en" ? "Car Count" : "Aantal Auto's"}</th>
                             <th>{language === "en" ? "Actions" : "Acties"}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {categories.length === 0 ? (
                             <tr>
-                                <td colSpan="3" style={{ textAlign: 'center' }}>
+                                <td colSpan="2" style={{ textAlign: 'center' }}>
                                     {language === "en" ? "No categories found" : "Geen categorieën gevonden"}
                                 </td>
                             </tr>
@@ -214,7 +213,6 @@ const Page = () => {
                             categories.map((category) => (
                                 <tr key={category.id}>
                                     <td>{category.name}</td>
-                                    <td>{category.count === null ? 0 : category?.count}</td>
                                     <td>
                                         <button
                                             className="edit-btn"

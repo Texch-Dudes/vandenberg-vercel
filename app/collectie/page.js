@@ -180,17 +180,17 @@ const CardDetails = ({ data, btnTitle, categoryId, categoryName }) => {
                   );
                 })}
           </div>
-          <div className="carInfo">
-            <h2>{data?.slug}</h2>
+          <div className="carInfo"> 
+            <h2 className="car-title">{data?.slug || "No Title Available"}</h2>
             <ul className="aboutCar">
               {properties.map(
                 ({ key, title, value }) =>
-                  value && (
+                  value ? (
                     <li key={key}>
-                      <span>{title[selectedLanguage]}</span>
-                      <p>{value}</p>
+                      <span>{title[selectedLanguage] || "N/A"}</span>
+                      <p>{value || "N/A"}</p>
                     </li>
-                  )
+                  ) : null
               )}
             </ul>
 
@@ -211,7 +211,7 @@ const CardDetails = ({ data, btnTitle, categoryId, categoryName }) => {
   );
 };
 
-export default function Collectie() {
+export default function Collectie() { 
   const dispatch = useDispatch();
   const activeCategory = useSelector((state) => state?.common?.activeCategory);
 
@@ -310,13 +310,31 @@ export default function Collectie() {
   };
   useEffect(() => {
     if (collectionCarCategorySection?.nodes) {
-      setCategories(
-        collectionCarCategorySection?.nodes
-          .filter((item) => !futureCarCategoriesIds?.includes(item?.databaseId))
-          .filter((item) => item.name !== "Toekomstige") // Hide "Toekomstige" category
+      const sortedCategories = collectionCarCategorySection?.nodes
+        .filter((item) => !futureCarCategoriesIds?.includes(item?.databaseId))
+        .filter((item) => item.name.toLowerCase() !== "toekomstige") // Hide "Toekomstige" category
+        .sort((a, b) => (a.name.toLowerCase() === "voorraad" ? -1 : b.name.toLowerCase() === "voorraad" ? 1 : 0)); // Ensure "Voorraad" is first
+
+      setCategories(sortedCategories);
+
+      // Set "Voorraad" as the default active category
+      const voorraadCategory = sortedCategories.find(
+        (category) => category.name.toLowerCase() === "voorraad"
       );
+      if (voorraadCategory) {
+        dispatch(setActiveCategory(voorraadCategory));
+
+        // Filter cars for the "Voorraad" category by default
+        setFilteredData(
+          collectionCarsDataSection?.nodes?.filter((data) =>
+            data?.carCategories?.nodes?.find(
+              (item) => item?.databaseId === voorraadCategory.databaseId
+            )
+          ) || []
+        );
+      }
     }
-  }, [collectionCarCategorySection?.nodes, futureCarCategoriesIds]);
+  }, [collectionCarCategorySection?.nodes, futureCarCategoriesIds, collectionCarsDataSection, dispatch]);
 
   useEffect(() => {
     Cookies.removeItem(DATA_BASE_CAR_ID);
