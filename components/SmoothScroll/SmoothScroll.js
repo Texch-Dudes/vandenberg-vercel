@@ -1,6 +1,5 @@
 "use client";
 import { Lenis, ReactLenis } from "@studio-freight/react-lenis";
-import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
@@ -11,38 +10,40 @@ function SmoothScroll({ children }) {
   const isLightBoxOpen = useSelector((state) => state.common.isLightBoxOpen);
   const prevPathRef = useRef(pathname);
 
-  useEffect(() => {
-    function update(time) {
-      lenisRef.current?.lenis?.raf(time * 1000);
-    }
-
-    gsap.ticker.add(update);
-
-    return () => {
-      gsap.ticker.remove(update);
-    };
-  }, []);
-
+  // ✅ Properly handling page transitions with smooth reset
   useEffect(() => {
     if (prevPathRef.current !== pathname) {
-      if (lenisRef.current?.lenis) {
-        lenisRef.current.lenis.scrollTo(0, { immediate: true });
-      }
-      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        lenisRef.current?.lenis?.scrollTo(0, { duration: 0.6, easing: (t) => t * (2 - t) });
+      });
 
       if (typeof window !== "undefined" && window.ScrollTrigger) {
-        ScrollTrigger.refresh();
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+        });
       }
 
       prevPathRef.current = pathname;
     }
   }, [pathname]);
 
+  // ✅ Ensuring Lenis is properly started
+  useEffect(() => {
+    if (lenisRef.current?.lenis) {
+      lenisRef.current.lenis.start();
+    }
+  }, []);
+
   return (
     <ReactLenis
+      ref={lenisRef}
       root
-      options={{ lerp: 0.05, smoothTouch: true }}
-      autoRaf={!isLightBoxOpen}
+      options={{
+        lerp: 0.08,       // ✅ Smoothness level (higher = smoother)
+        smooth: true,     // ✅ Enable smooth scrolling
+        smoothTouch: 0.1, // ✅ Smooth scrolling on touch devices
+      }}
+      autoRaf={true} // ✅ Let Lenis handle its own animation frame
     >
       {children}
     </ReactLenis>
