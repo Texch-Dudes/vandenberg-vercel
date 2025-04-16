@@ -110,8 +110,8 @@ export const fetchCollectionPageData = createAsyncThunk(
     try {
       const data = (await getCollectionPageContentApi(language)) || {};
       const { data: data2 } = await getCarDetailsContentApi(language);
-      const { data: labelData } = await getCollectiePageLabelApi(language);
-      dispatch(setCollectionPage({ ...data, ...data2, labelData }));
+      // const { data: labelData } = await getCollectiePageLabelApi(language);
+      dispatch(setCollectionPage({ ...data, ...data2 }));
       console.log("data", data);
     } catch (error) {}
   }
@@ -164,10 +164,10 @@ export const fetchCollectionDetailsPageData = createAsyncThunk(
         localStorage.getItem(LOCAL_STORAGE.LANGUAGE_KEY) ||
         LANGAUGE.DEFAULT_LANGUAGE_CODE;
       const { data } = await getAutomationPageContentApi(payload, language);
-      const { data: labelData } = await getCollectiePageLabelApi(language);
+      // const { data: labelData } = await getCollectiePageLabelApi(language);
 
       if (data?.car) {
-        dispatch(setCollectionDetailsPage({ ...data.car, labelData }));
+        dispatch(setCollectionDetailsPage({ ...data.car }));
       } else {
         window.location.href = NOT_FOUND_PATH;
       }

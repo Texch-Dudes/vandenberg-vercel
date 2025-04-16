@@ -342,7 +342,7 @@ export default function Collectie() {
 
   useEffect(() => {
     dispatch(fetchCollectionPageData());
-    dispatch(fetchFutureProjectsCategory());
+    // dispatch(fetchFutureProjectsCategory());
   }, [userLanguage, dispatch]);
 
   let dataRender = 0;
